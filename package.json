@@ -5,7 +5,7 @@
   "main": "tset.js",
   "scripts": {
     "test": "jest",
-    "test:staged": "hest"
+    "test:staged": "jest"
   },
   "keywords": [],
   "author": "",
