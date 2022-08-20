@@ -4,7 +4,7 @@
   "description": "",
   "main": "tset.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
     "test:staged": "jest"
   },
   "keywords": [],
