@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   clearMocks: true,
   roots: ['<rootDir>/src'],
   collectCoverage: true,
