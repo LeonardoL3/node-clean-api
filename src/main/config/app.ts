@@ -6,8 +6,4 @@ const app = express()
 setupMiddlewares(app)
 setupRoutes(app)
 
-app.get('/teste', (req: any, res: any) => {
-  res.send(req.body)
-})
-
 export default app
