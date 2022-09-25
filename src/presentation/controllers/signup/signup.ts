@@ -17,7 +17,7 @@ export class SignUpController implements Controller {
 
       for (const requiredField of requiredFields) {
         if (!httpRequest.body[requiredField]) {
-          return badRequest(new MissingParamError(requiredField).message)
+          return badRequest(new MissingParamError(requiredField))
         }
       }
 
@@ -25,11 +25,11 @@ export class SignUpController implements Controller {
 
       const isValidEmail = this.emailValidator.isValid(email)
       if (!isValidEmail) {
-        return badRequest(new InvalidParamError('email').message)
+        return badRequest(new InvalidParamError('email'))
       }
 
       if (password !== passwordConfirmation) {
-        return badRequest(new InvalidParamError('passwordConfirmation').message)
+        return badRequest(new InvalidParamError('passwordConfirmation'))
       }
 
       const account = await this.addAccount.add({
@@ -39,8 +39,8 @@ export class SignUpController implements Controller {
       })
 
       return ok(account)
-    } catch (err: any) {
-      return serverError()
+    } catch (err) {
+      return serverError(err as Error)
     }
   }
 }
