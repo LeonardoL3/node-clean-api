@@ -4,10 +4,12 @@ import { LoginController } from './login'
 import { EmailValidator } from '../../protocols/email-validator'
 import { InvalidParamError } from '../../errors'
 import { HttpRequest } from '../../protocols'
+import { Authentication } from '../../../domain/usecases/authentication'
 
 interface SutTypes {
   sut: LoginController
   emailValidatorStub: EmailValidator
+  authenticationStub: Authentication
 }
 
 const makeFakeRequest = (): HttpRequest => ({
@@ -16,6 +18,16 @@ const makeFakeRequest = (): HttpRequest => ({
     password: 'any_password'
   }
 })
+
+const makeAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async authenticate ({ email, password }: {email: string, password: string}): Promise<string> {
+      return await new Promise(resolve => resolve('token'))
+    }
+  }
+
+  return new AuthenticationStub()
+}
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -29,10 +41,12 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
-  const sut = new LoginController(emailValidatorStub)
+  const authenticationStub = makeAuthentication()
+  const sut = new LoginController(emailValidatorStub, authenticationStub)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    authenticationStub
   }
 }
 
@@ -78,5 +92,12 @@ describe('Login Controller', () => {
     jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => { throw new Error() })
     const httpResponse = await sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  it('Should call authentication with correct email and password', async () => {
+    const { sut, authenticationStub } = makeSut()
+    const isValidAuthentication = jest.spyOn(authenticationStub, 'authenticate')
+    await sut.handle(makeFakeRequest())
+    expect(isValidAuthentication).toHaveBeenCalledWith({ email: 'any_email@mail.com', password: 'any_password' })
   })
 })
