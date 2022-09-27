@@ -1,7 +1,7 @@
 {
   "name": "clean-architeture",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node rest api with TDD, Clean Architecture and SOLID",
   "main": "tset.js",
   "scripts": {
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
