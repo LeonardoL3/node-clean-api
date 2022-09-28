@@ -1,5 +1,5 @@
 import { InvalidParamError, MissingParamError } from '../../errors'
-import { badRequest, serverError, unauthorized } from '../../helper/http-helper'
+import { badRequest, ok, serverError, unauthorized } from '../../helper/http-helper'
 import { EmailValidator, Authentication, Controller, HttpRequest, HttpResponse } from './login-protocols'
 
 export class LoginController implements Controller {
@@ -27,16 +27,13 @@ export class LoginController implements Controller {
         return await new Promise(resolve => resolve(badRequest(new InvalidParamError('email'))))
       }
 
-      const acccessToken = await this.authentication.authenticate({ email, password })
+      const accessToken = await this.authentication.authenticate({ email, password })
 
-      if (!acccessToken) {
+      if (!accessToken) {
         return unauthorized()
       }
 
-      return {
-        statusCode: 200,
-        body: 'show'
-      }
+      return ok({ accessToken })
     } catch (err: any) {
       return serverError(err)
     }
