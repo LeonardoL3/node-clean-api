@@ -5,6 +5,7 @@ export class ValidationComposite implements Validation {
 
   constructor (validations: Validation[]) {
     this.validations = validations
+    console.log(validations)
   }
 
   validate (input: any): Error | null {
